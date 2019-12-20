@@ -1,0 +1,17 @@
+on: [push]
+name: Run Tests
+
+jobs:
+    PHPUnit:
+        runs-on: ubuntu-18.04
+        strategy:
+            fail-fast: false
+            matrix:
+                php: [7.2, 7.4, 7.3]
+        steps:
+            - uses: actions/checkout@v1
+            - name: Install PHIVE
+              run: wget https://github.com/phar-io/phive/releases/download/0.13.2/phive-0.13.2.phar -O phive && chmod +x phive
+            - run: composer install --no-interaction --no-scripts --no-progress --no-suggest
+            - run: ./phive install --trust-gpg-keys 4AA394086372C20A --force-accept-unsigned
+            - run: tools/phpunit
